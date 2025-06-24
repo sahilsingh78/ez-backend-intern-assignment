@@ -1,69 +1,94 @@
-# EZ Backend Intern Assignment
+# 📁 EZ Backend Intern Assignment
 
-## 📝 Overview
-
-This repository contains the solution to the Backend Intern assignment provided by EZ as part of the recruitment process. The assignment demonstrates backend development skills including API creation, data management, and implementation of business logic using [Your Chosen Language/Framework, e.g., PHP, Node.js, Python Flask, etc.].
+This repository contains the solution to the backend intern assessment provided by **EZ**. It is a secure file-sharing API developed using **FastAPI**, which supports role-based access control for uploading and downloading specific document types (`.docx`, `.pptx`, `.xlsx`).
 
 ---
 
-## 🚀 Tech Stack
+## 🔧 Tech Stack
 
-- Programming Language: [e.g., PHP / Node.js / Python]
-- Framework: [e.g., Laravel / Express.js / Flask]
-- Database: [e.g., MySQL / PostgreSQL / MongoDB / SQLite]
-- Tools Used: 
-  - Git & GitHub
-  - Postman (for API testing)
-  - VS Code (Editor)
+- **Language**: Python 3
+- **Framework**: FastAPI
+- **Security**: JWT (OAuth2), Fernet encryption
+- **Authentication**: Role-based access (`ops`, `client`)
+- **Data Storage**: In-memory (dictionary-based)
+- **Package Management**: `pip` (`requirements.txt`)
+- **API Testing**: Postman (collection included)
 
 ---
 
 ## 📂 Project Structure
-/project-root
-│
-├── /routes # API route definitions
-├── /controllers # Business logic and API handlers
-├── /models # Database schemas/models
-├── /utils # Utility/helper functions
-├── /config # DB config / environment setup
-├── .env # Environment variables (excluded from repo)
-├── README.md # Project documentation
-└── index.js/app.php/main.py # Entry point
+
+ez-backend-intern-assignment/
+├── main.py # Application logic
+├── .env # Environment variables (excluded from commit)
+├── requirements.txt # Project dependencies
+├── uploads/ # Uploaded files directory
+├── SecureFileSharingAPI.postman_collection.json # Postman API collection
+└── README.md # Project documentation
+---
+
+## 🔐 Features
+
+- User registration with role selection (client / ops)
+- Email verification with secure token (simulated using Fernet)
+- JWT-based login and authentication
+- File upload (allowed only for 'ops' users)
+- File listing and downloading (allowed only for verified 'client' users)
+- Secure one-time download links
+- Download history simulation
 
 ---
 
-## 📬 APIs Implemented
-
-| Method | Endpoint         | Description                   |
-|--------|------------------|-------------------------------|
-| GET    | `/tasks`         | Get all tasks                 |
-| POST   | `/tasks`         | Create a new task             |
-| PUT    | `/tasks/:id`     | Update an existing task       |
-| DELETE | `/tasks/:id`     | Delete a task                 |
-
-> Add or modify according to your actual implementation
-
----
-
-## ⚙️ Setup & Run Instructions
+## 📦 Installation & Setup
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/ez-backend-assignment.git
-   cd ez-backend-assignment
+   git clone https://github.com/yourusername/ez-backend-intern-assignment.git
+   cd ez-backend-intern-assignment
+   
 2. Install Dependencies
-npm install         # For Node.js
-composer install    # For PHP
-pip install -r requirements.txt  # For Python
-Setup Environment Variables
-3. Create a .env file in the root directory with appropriate values:
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=your_password
-DB_NAME=ez_test_db
-4. Run the Application
-   npm start           # Node.js
-php -S localhost:8000 # PHP
-python app.py       # Python
-5.Test the APIs
-Use Postman or cURL to test endpoints.
+   pip install -r requirements.txt
+   
+4. Setup Environment Variables
+   Create a .env file with the following content:
+   SECRET_KEY=your_jwt_secret_key
+  ALGORITHM=HS256
+  ACCESS_TOKEN_EXPIRE_MINUTES=30
+  FERNET_KEY=your_fernet_key_here
+  To generate a Fernet key, run:
+  from cryptography.fernet import Fernet
+  print(Fernet.generate_key().decode())
+
+5. Run the Application
+   uvicorn main:app --reload
+
+6. Open in browser:
+   http://127.0.0.1:8000/docs
+📬 API Endpoints
+Method	Endpoint	Access Role	Description
+POST	/signup	Public	Register new user
+GET	/verify-email/{token}	Public	Simulate email verification
+POST	/login	Public	Login and get access token
+POST	/upload	Ops only	Upload file
+GET	/list-files	Client only	View uploaded files
+GET	/download-file/{file_id}	Client only	Generate secure download link
+GET	/secure-download/{token}	Client only	Secure file download
+GET	/download-history	Client only	View download history
+
+Use the included Postman collection: SecureFileSharingAPI.postman_collection.json for testing.
+
+
+🧪 Testing with Postman
+Import the file SecureFileSharingAPI.postman_collection.json into Postman.
+
+Follow the flow:
+
+Sign up (/signup)
+
+Copy token from /verify-email/{token} and hit the route
+
+Login via /login and use token for other requests
+
+Upload file (as ops)
+
+List and download file (as client)
